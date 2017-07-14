@@ -503,10 +503,16 @@ class Scope
 			return new NullType();
 		} elseif ($node instanceof Node\Expr\ClassConstFetch) {
 			if ($node->class instanceof Name) {
-				$constantClass = (string) $node->class;
-				if ($constantClass === 'self') {
-					$constantClass = $this->getClassReflection()->getName();
-				}
+                $constantClass = (string)$node->class;
+                if (in_array(
+                    $constantClass, [
+                    'self',
+                    'static',
+                    'parent',
+                ], true
+                )) {
+                    $constantClass = $this->getClassReflection()->getName();
+                }
 			} elseif ($node->class instanceof Expr) {
 				$constantClassType = $this->getType($node->class);
 				if ($constantClassType->getClass() !== null) {
