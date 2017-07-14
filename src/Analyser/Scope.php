@@ -601,9 +601,13 @@ class Scope
 				}
 				if ($staticMethodReflection->getReturnType() instanceof StaticResolvableType) {
 					$nodeClassString = (string) $node->class;
-					if ($nodeClassString === 'parent' && $this->isInClass()) {
-						return $staticMethodReflection->getReturnType()->changeBaseClass($this->getClassReflection()->getName());
-					}
+                    if (in_array($nodeClassString, [
+                            'self',
+                            'static',
+                            'parent',
+                        ], true) && $this->isInClass()) {
+                        return $staticMethodReflection->getReturnType()->changeBaseClass($this->getClassReflection()->getName());
+                    }
 
 					return $staticMethodReflection->getReturnType()->resolveStatic($calleeClass);
 				}

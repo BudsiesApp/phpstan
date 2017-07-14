@@ -1190,6 +1190,19 @@ class NodeScopeResolver
 			&& $functionCall->class instanceof Name
 			&& is_string($functionCall->name)) {
 			$className = (string) $functionCall->class;
+
+            if (in_array(
+                    $className, [
+                    'parent',
+                    'self',
+                    'static'
+                ], true
+                )
+                && $scope->isInClass()
+            ) {
+                $className = $scope->getClassReflection()->getName();
+            }
+
 			if ($this->broker->hasClass($className)) {
 				$classReflection = $this->broker->getClass($className);
 				if ($classReflection->hasMethod($functionCall->name)) {
